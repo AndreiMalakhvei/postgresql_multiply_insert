@@ -9,6 +9,7 @@ def timer(func):
         result = func(*args, **kwargs)
         end_time = time.perf_counter()
         total_time = end_time - start_time
+
         print(f'Function {func.__name__} for {len(*args)} records took {total_time} seconds')
-        return result
+        return total_time
     return timer_wrapper

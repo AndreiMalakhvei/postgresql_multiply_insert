@@ -24,21 +24,23 @@ def values_insert(obs_list):
 
 if __name__ == "__main__":
 
+    number_of_records = 1000
+
     database.table_create()
-    obj_lst_one = create_obj_list(1000)
-    obj_list_ten = create_obj_list(10000)
-    tup_list_one = create_tuple_list(1000)
-    tup_list_ten = create_tuple_list(10000)
+    obj_lst = create_obj_list(number_of_records)
+    tup_list = create_tuple_list(number_of_records)
+
 
     print('Inserting objects one by one')
-    insert_one_by_one(obj_lst_one)
-
-    print('*'*70 + '\n' + 'Inserting tuples one by one')
-    insert_one_by_one(obj_lst_one)
-
+    one_by_one_time = insert_one_by_one(obj_lst)
 
     print('*'*70 + '\n' + 'Inserting tuples with batch')
-    batch_insert(tup_list_one)
+    batch_time = batch_insert(tup_list)
+    print(f'batch is {one_by_one_time / batch_time } times faster')
+
 
     print('*' * 70 + '\n' + 'Inserting tuples with values')
-    values_insert(obj_lst_one)
+    values_time = values_insert(obj_lst)
+    print(f'values insert is {one_by_one_time / values_time} times faster')
+
+    database.delete_all()

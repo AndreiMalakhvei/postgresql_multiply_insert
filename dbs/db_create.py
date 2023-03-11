@@ -14,7 +14,8 @@ class PostgresqlDB:
             cls.instance = super(PostgresqlDB, cls).__new__(cls)
         return cls.instance
 
-    def table_create(self):
+    @staticmethod
+    def table_create():
         with psycopg2.connect(dbname=PostgresqlDB.DBNAME, user=PostgresqlDB.USER, password=PostgresqlDB.PASSWORD,
                               host=PostgresqlDB.HOST) as conn:
             with conn.cursor() as cur:
@@ -41,7 +42,8 @@ class PostgresqlDB:
 
                         )''')
 
-    def save_single_record(self, obj):
+    @staticmethod
+    def save_single_record(obj):
         with psycopg2.connect(dbname=PostgresqlDB.DBNAME, user=PostgresqlDB.USER, password=PostgresqlDB.PASSWORD,
                               host=PostgresqlDB.HOST) as conn:
             with conn.cursor() as cur:
@@ -54,7 +56,8 @@ class PostgresqlDB:
                              obj.seller, ','.join(obj.photo_links), obj.photo_qty)
                             )
 
-    def save_batch(self, data_tuple):
+    @staticmethod
+    def save_batch(data_tuple):
         with psycopg2.connect(dbname=PostgresqlDB.DBNAME, user=PostgresqlDB.USER, password=PostgresqlDB.PASSWORD,
                               host=PostgresqlDB.HOST) as conn:
             with conn.cursor() as cur:
@@ -66,7 +69,8 @@ class PostgresqlDB:
                             data_tuple, page_size=1000
                             )
 
-    def save_tuple_one_by_one(self, data_tuple):
+    @staticmethod
+    def save_tuple_one_by_one(data_tuple):
         with psycopg2.connect(dbname=PostgresqlDB.DBNAME, user=PostgresqlDB.USER, password=PostgresqlDB.PASSWORD,
                               host=PostgresqlDB.HOST) as conn:
             with conn.cursor() as cur:
@@ -79,13 +83,23 @@ class PostgresqlDB:
 
                             )
 
-    def save_values(self, obj_list):
+    @staticmethod
+    def save_values(obj_list):
         with psycopg2.connect(dbname=PostgresqlDB.DBNAME, user=PostgresqlDB.USER, password=PostgresqlDB.PASSWORD,
                               host=PostgresqlDB.HOST) as conn:
             with conn.cursor() as cur:
                 ext.execute_values(cur, ''' INSERT INTO testing (link, reference, price, title, description, pubdate,areas,city,address,
-                        region,rooms,exyear,seller, photo_links, photo_qty) VALUES %s ''',
+                        region,rooms,exyear,seller, photo_links, photo_qty) VALUES %s''',
                                    [(
                              obj.link, obj.reference, obj.price, obj.title, obj.description, obj.pubdate,
                              obj.areas, obj.city, obj.address, obj.region, obj.rooms, obj.exyear,
                              obj.seller, ','.join(obj.photo_links), obj.photo_qty) for obj in obj_list], page_size=1000)
+
+    @staticmethod
+    def delete_all():
+        with psycopg2.connect(dbname=PostgresqlDB.DBNAME, user=PostgresqlDB.USER, password=PostgresqlDB.PASSWORD,
+                              host=PostgresqlDB.HOST) as conn:
+            with conn.cursor() as cur:
+                cur.execute('''
+                    DELETE FROM testing
+                        ''')
